@@ -6,9 +6,8 @@ import com.rickymorty.customer.models.RickyMortyLocation;
 import com.rickymorty.customer.services.ConsumerApi;
 import com.rickymorty.customer.services.TranslateData;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Main {
     private Scanner scanner = new Scanner(System.in);
@@ -40,11 +39,31 @@ public class Main {
                 var tempEpisode = consumerApi.getData(e);
                 RickyMortyEpisode episode = translateData.getData(tempEpisode, RickyMortyEpisode.class);
                 episodes.add(episode);
+                showProgress();
             });
             residents.add(character);
+            showProgress();
         });
 
         residents.forEach(System.out::println);
         episodes.forEach(System.out::println);
+
+        List<String> urlEpisodes = residents.stream()
+                .flatMap(c -> c.episodes().stream())
+                .collect(Collectors.toList());
+
+        System.out.println(urlEpisodes);
+
+        System.out.println("Top 5 character with more episodes...");
+
+        residents.stream()
+                .map(c -> Map.of(c.name(), c.episodes().size()))
+                .sorted(Comparator.comparing(c -> c.values().iterator().next(), Comparator.reverseOrder()))
+                .limit(5)
+                .forEach(System.out::println);
+    }
+
+    public void showProgress() {
+        System.out.print(".");
     }
 }
