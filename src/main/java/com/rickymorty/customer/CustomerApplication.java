@@ -9,6 +9,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootApplication
 public class CustomerApplication implements CommandLineRunner {
 
@@ -21,16 +24,26 @@ public class CustomerApplication implements CommandLineRunner {
 		ConsumerApi consumerApi = new ConsumerApi();
 		TranslateData translateData = new TranslateData();
 
-		var json = consumerApi.getData("https://rickandmortyapi.com/api/character/2");
-		RickyMortyCharacter character = translateData.getData(json, RickyMortyCharacter.class);
-		System.out.println(character);
-
-		json = consumerApi.getData("https://rickandmortyapi.com/api/location/3");
+		var json = consumerApi.getData("https://rickandmortyapi.com/api/location/3");
 		RickyMortyLocation location = translateData.getData(json, RickyMortyLocation.class);
 		System.out.println(location);
 
-		json = consumerApi.getData("https://rickandmortyapi.com/api/episode/28");
-		RickyMortyEpisode episode = translateData.getData(json, RickyMortyEpisode.class);
-		System.out.println(episode);
+		List<RickyMortyCharacter> residents = new ArrayList<>();
+		List<RickyMortyEpisode> episodes = new ArrayList<>();
+		for (int i = 0; i < location.residents().size(); i++) {
+			json = consumerApi.getData(location.residents().get(i));
+			RickyMortyCharacter character = translateData.getData(json, RickyMortyCharacter.class);
+			System.out.println(character);
+			for (int j = 0; j < character.episodes().size(); j++) {
+				json = consumerApi.getData(character.episodes().get(j));
+				RickyMortyEpisode episode = translateData.getData(json, RickyMortyEpisode.class);
+				System.out.println(episode);
+				episodes.add(episode);
+			}
+			residents.add(character);
+		}
+
+		System.out.println(residents);
+		System.out.println(episodes);
 	}
 }
