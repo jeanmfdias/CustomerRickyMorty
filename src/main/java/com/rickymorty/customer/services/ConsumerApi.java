@@ -1,6 +1,6 @@
-package com.rickymorty.customer.service;
+package com.rickymorty.customer.services;
 
-import com.rickymorty.customer.contracts.Consumer;
+import com.rickymorty.customer.contracts.IConsumer;
 
 import java.io.IOException;
 import java.net.URI;
@@ -8,7 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-public class ConsumerApi implements Consumer {
+public class ConsumerApi implements IConsumer {
     @Override
     public String getData(String address) {
         HttpClient client = HttpClient.newHttpClient();

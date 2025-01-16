@@ -1,5 +1,5 @@
 package com.rickymorty.customer.contracts;
 
-public interface Consumer {
+public interface IConsumer {
     public String getData(String address);
 }
