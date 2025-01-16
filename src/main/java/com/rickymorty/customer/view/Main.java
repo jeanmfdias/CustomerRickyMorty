@@ -32,18 +32,17 @@ public class Main {
 
         List<RickyMortyCharacter> residents = new ArrayList<>();
         List<RickyMortyEpisode> episodes = new ArrayList<>();
-        for (int i = 0; i < location.residents().size(); i++) {
-            json = consumerApi.getData(location.residents().get(i));
-            RickyMortyCharacter character = translateData.getData(json, RickyMortyCharacter.class);
-            System.out.println(character);
-            for (int j = 0; j < character.episodes().size(); j++) {
-                json = consumerApi.getData(character.episodes().get(j));
-                RickyMortyEpisode episode = translateData.getData(json, RickyMortyEpisode.class);
-                System.out.println(episode);
+
+        location.residents().forEach(c -> {
+            var temp = consumerApi.getData(c);
+            RickyMortyCharacter character = translateData.getData(temp, RickyMortyCharacter.class);
+            character.episodes().forEach(e -> {
+                var tempEpisode = consumerApi.getData(e);
+                RickyMortyEpisode episode = translateData.getData(tempEpisode, RickyMortyEpisode.class);
                 episodes.add(episode);
-            }
+            });
             residents.add(character);
-        }
+        });
 
         residents.forEach(System.out::println);
         episodes.forEach(System.out::println);
