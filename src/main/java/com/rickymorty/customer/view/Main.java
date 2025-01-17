@@ -54,6 +54,14 @@ public class Main {
 
         System.out.println(urlEpisodes);
 
+        topFiveCharacter(residents);
+    }
+
+    private void showProgress() {
+        System.out.print(".");
+    }
+
+    private void topFiveCharacter(List<RickyMortyCharacter> residents) {
         System.out.println("Top 5 character with more episodes...");
 
         residents.stream()
@@ -61,9 +69,5 @@ public class Main {
                 .sorted(Comparator.comparing(c -> c.values().iterator().next(), Comparator.reverseOrder()))
                 .limit(5)
                 .forEach(System.out::println);
-    }
-
-    public void showProgress() {
-        System.out.print(".");
     }
 }
