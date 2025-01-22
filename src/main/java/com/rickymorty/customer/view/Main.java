@@ -79,12 +79,11 @@ public class Main {
         locations.forEach(System.out::println);
 
         System.out.print("Choice a name location: ");
-        scanner.nextLine();
         scanner.reset();
-        String locationName = scanner.nextLine();
+        Long locationId = scanner.nextLong();
 
         Optional<RickyMortyLocation> location = locations.stream()
-                .filter(l -> l.getName().toLowerCase().contains(locationName.toLowerCase()))
+                .filter(l -> l.getId().equals(locationId))
                 .findFirst();
 
         if (location.isPresent()) {

@@ -26,6 +26,10 @@ public class RickyMortyCharacter {
     @ManyToOne
     private RickyMortyLocation location;
 
+    public RickyMortyCharacter() {
+
+    }
+
     public RickyMortyCharacter(RickyMortyCharacterRecord character) {
         this.name = character.name();
         this.status = character.status();
