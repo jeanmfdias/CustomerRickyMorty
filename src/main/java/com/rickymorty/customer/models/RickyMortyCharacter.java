@@ -23,6 +23,9 @@ public class RickyMortyCharacter {
     @Transient
     private List<String> episodes;
 
+    @ManyToOne
+    private RickyMortyLocation location;
+
     public RickyMortyCharacter(RickyMortyCharacterRecord character) {
         this.name = character.name();
         this.status = character.status();
@@ -68,5 +71,13 @@ public class RickyMortyCharacter {
 
     public void setEpisodes(List<String> episodes) {
         this.episodes = episodes;
+    }
+
+    public RickyMortyLocation getLocation() {
+        return location;
+    }
+
+    public void setLocation(RickyMortyLocation location) {
+        this.location = location;
     }
 }

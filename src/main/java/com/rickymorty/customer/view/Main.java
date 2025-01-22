@@ -1,9 +1,6 @@
 package com.rickymorty.customer.view;
 
-import com.rickymorty.customer.models.RickyMortyLocation;
-import com.rickymorty.customer.models.RickyMortyCharacterRecord;
-import com.rickymorty.customer.models.RickyMortyEpisodeRecord;
-import com.rickymorty.customer.models.RickyMortyLocationRecord;
+import com.rickymorty.customer.models.*;
 import com.rickymorty.customer.repositories.ILocationRepository;
 import com.rickymorty.customer.services.ConsumerApi;
 import com.rickymorty.customer.services.TranslateData;
@@ -14,7 +11,7 @@ import java.util.stream.Collectors;
 public class Main {
     private final Scanner scanner = new Scanner(System.in);
 
-    private final String ADDRESS = "https://rickandmortyapi.com/api/location/";
+    private final String ADDRESS_LOCATION = "https://rickandmortyapi.com/api/location/";
 
     private final ConsumerApi consumerApi = new ConsumerApi();
 
@@ -33,6 +30,7 @@ public class Main {
             System.out.println("Choose a option: ");
             System.out.println("1 - Search Location");
             System.out.println("2 - List All Locations");
+            System.out.println("3 - Search All Character by Location");
             System.out.println("0 - Exit");
             option = scanner.nextInt();
 
@@ -42,6 +40,9 @@ public class Main {
                     break;
                 case 2:
                     this.listAllLocations();
+                    break;
+                case 3:
+                    this.searchCharacterByLocation();
                     break;
                 case 0:
                     break;
@@ -55,18 +56,57 @@ public class Main {
         scanner.reset();
         System.out.print("Type location ID: ");
         int locationId = scanner.nextInt();
-        String fullAddress = ADDRESS + locationId;
+        RickyMortyLocation location = this.getOneLocation(locationId);
+        this.locationRepository.save(location);
+    }
+
+    private RickyMortyLocation getOneLocation(int locationId) {
+        String fullAddress = ADDRESS_LOCATION + locationId;
 
         var json = consumerApi.getData(fullAddress);
 
         RickyMortyLocationRecord rmLocation = translateData.getData(json, RickyMortyLocationRecord.class);
-        RickyMortyLocation location = new RickyMortyLocation(rmLocation);
-        this.locationRepository.save(location);
+        return new RickyMortyLocation(rmLocation);
     }
 
     private void listAllLocations() {
         List<RickyMortyLocation> locations = this.locationRepository.findAll();
         locations.stream().forEach(System.out::println);
+    }
+
+    private void searchCharacterByLocation() {
+        List<RickyMortyLocation> locations = this.locationRepository.findAll();
+        locations.forEach(System.out::println);
+
+        System.out.print("Choice a name location: ");
+        scanner.nextLine();
+        scanner.reset();
+        String locationName = scanner.nextLine();
+
+        Optional<RickyMortyLocation> location = locations.stream()
+                .filter(l -> l.getName().toLowerCase().contains(locationName.toLowerCase()))
+                .findFirst();
+
+        if (location.isPresent()) {
+            RickyMortyLocation locationFinded = location.get();
+            String url = ADDRESS_LOCATION + "?name=" + locationFinded.getName().toLowerCase().replace(" ", "+");
+            String json = this.consumerApi.getData(url);
+            RickyMortyLocationListRecord locationRecords = this.translateData.getData(json, RickyMortyLocationListRecord.class);
+            List<RickyMortyCharacter> characters = new ArrayList<>();
+            for (RickyMortyLocationRecord record : locationRecords.locations()) {
+                for (String urlCharacter : record.residents()) {
+                    json = this.consumerApi.getData(urlCharacter);
+                    RickyMortyCharacterRecord characterRecord = this.translateData.getData(json, RickyMortyCharacterRecord.class);
+                    RickyMortyCharacter character = new RickyMortyCharacter(characterRecord);
+                    characters.add(character);
+                    showProgress();
+                }
+            }
+            locationFinded.setResidents(characters);
+            this.locationRepository.save(locationFinded);
+        } else {
+            System.out.println("Location not found!");
+        }
     }
 
     private void showEpisodesAndCharacters(RickyMortyLocationRecord rickyMortyLocationRecord) {

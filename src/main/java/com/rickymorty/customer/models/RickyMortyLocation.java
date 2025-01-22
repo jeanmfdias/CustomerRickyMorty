@@ -20,8 +20,8 @@ public class RickyMortyLocation {
     @Column
     private String dimension;
 
-    @Transient
-    private List<String> residents;
+    @OneToMany(mappedBy = "location")
+    private List<RickyMortyCharacter> residents;
 
     public RickyMortyLocation() {
 
@@ -31,7 +31,7 @@ public class RickyMortyLocation {
         this.name = location.name();
         this.type = location.type();
         this.dimension = location.dimension();
-        this.residents = location.residents();
+//        this.residents = location.residents();
     }
 
     public Long getId() {
@@ -66,11 +66,11 @@ public class RickyMortyLocation {
         this.dimension = dimension;
     }
 
-    public List<String> getResidents() {
+    public List<RickyMortyCharacter> getResidents() {
         return residents;
     }
 
-    public void setResidents(List<String> residents) {
+    public void setResidents(List<RickyMortyCharacter> residents) {
         this.residents = residents;
     }
 
