@@ -1,11 +1,27 @@
 package com.rickymorty.customer.models;
 
+import jakarta.persistence.*;
+
 import java.util.List;
 
+@Entity
+@Table(name = "characters")
 public class RMCharacter {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
     private String name;
+
+    @Column(nullable = false)
     private String status;
+
+    @Column(nullable = false)
     private String species;
+
+    @Transient
     private List<String> episodes;
 
     public RMCharacter(RickyMortyCharacter character) {
@@ -13,6 +29,14 @@ public class RMCharacter {
         this.status = character.status();
         this.species = character.species();
         this.episodes = character.episodes();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

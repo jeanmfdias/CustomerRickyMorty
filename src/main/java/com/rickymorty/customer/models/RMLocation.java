@@ -1,11 +1,26 @@
 package com.rickymorty.customer.models;
 
+import jakarta.persistence.*;
+
 import java.util.List;
 
+@Entity
+@Table(name = "locations")
 public class RMLocation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
     private String name;
+
+    @Column
     private String type;
+
+    @Column
     private String dimension;
+
+    @Transient
     private List<String> residents;
 
     public RMLocation(RickyMortyLocation location) {
@@ -13,6 +28,14 @@ public class RMLocation {
         this.type = location.type();
         this.dimension = location.dimension();
         this.residents = location.residents();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
