@@ -28,6 +28,31 @@ public class Main {
 
     public void showMenu() {
         scanner.reset();
+        int option = -1;
+        while (option != 0) {
+            System.out.println("Choose a option: ");
+            System.out.println("1 - Search Location");
+            System.out.println("2 - List All Locations");
+            System.out.println("0 - Exit");
+            option = scanner.nextInt();
+
+            switch (option) {
+                case 1:
+                    this.searchLocation();
+                    break;
+                case 2:
+                    this.listAllLocations();
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println("Invalid option");
+            }
+        }
+    }
+
+    private void searchLocation() {
+        scanner.reset();
         System.out.print("Type location ID: ");
         int locationId = scanner.nextInt();
         String fullAddress = ADDRESS + locationId;
@@ -37,11 +62,18 @@ public class Main {
         RickyMortyLocationRecord rmLocation = translateData.getData(json, RickyMortyLocationRecord.class);
         RickyMortyLocation location = new RickyMortyLocation(rmLocation);
         this.locationRepository.save(location);
+    }
 
+    private void listAllLocations() {
+        List<RickyMortyLocation> locations = this.locationRepository.findAll();
+        locations.stream().forEach(System.out::println);
+    }
+
+    private void showEpisodesAndCharacters(RickyMortyLocationRecord rickyMortyLocationRecord) {
         List<RickyMortyCharacterRecord> residents = new ArrayList<>();
         List<RickyMortyEpisodeRecord> episodes = new ArrayList<>();
 
-        rmLocation.residents().forEach(c -> {
+        rickyMortyLocationRecord.residents().forEach(c -> {
             var temp = consumerApi.getData(c);
             RickyMortyCharacterRecord character = translateData.getData(temp, RickyMortyCharacterRecord.class);
             character.episodes().forEach(e -> {
@@ -62,8 +94,6 @@ public class Main {
                 .collect(Collectors.toList());
 
         System.out.println(urlEpisodes);
-
-        topFiveCharacter(residents);
     }
 
     private void showProgress() {

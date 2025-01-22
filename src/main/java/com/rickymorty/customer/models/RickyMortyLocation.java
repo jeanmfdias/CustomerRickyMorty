@@ -23,6 +23,10 @@ public class RickyMortyLocation {
     @Transient
     private List<String> residents;
 
+    public RickyMortyLocation() {
+
+    }
+
     public RickyMortyLocation(RickyMortyLocationRecord location) {
         this.name = location.name();
         this.type = location.type();
@@ -68,5 +72,14 @@ public class RickyMortyLocation {
 
     public void setResidents(List<String> residents) {
         this.residents = residents;
+    }
+
+    @Override
+    public String toString() {
+        return "#%d Name: %s | Type: %s | Dimension: %s".formatted(
+                this.getId(),
+                this.getName(),
+                this.getType(),
+                this.getDimension());
     }
 }
