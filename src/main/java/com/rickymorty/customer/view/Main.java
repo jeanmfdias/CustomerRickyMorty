@@ -1,8 +1,10 @@
 package com.rickymorty.customer.view;
 
-import com.rickymorty.customer.models.RickyMortyCharacter;
-import com.rickymorty.customer.models.RickyMortyEpisode;
 import com.rickymorty.customer.models.RickyMortyLocation;
+import com.rickymorty.customer.models.RickyMortyCharacterRecord;
+import com.rickymorty.customer.models.RickyMortyEpisodeRecord;
+import com.rickymorty.customer.models.RickyMortyLocationRecord;
+import com.rickymorty.customer.repositories.ILocationRepository;
 import com.rickymorty.customer.services.ConsumerApi;
 import com.rickymorty.customer.services.TranslateData;
 
@@ -10,13 +12,19 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main {
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     private final String ADDRESS = "https://rickandmortyapi.com/api/location/";
 
-    private ConsumerApi consumerApi = new ConsumerApi();
+    private final ConsumerApi consumerApi = new ConsumerApi();
 
-    TranslateData translateData = new TranslateData();
+    private final TranslateData translateData = new TranslateData();
+
+    private final ILocationRepository locationRepository;
+
+    public Main(ILocationRepository iLocationRepository) {
+        this.locationRepository = iLocationRepository;
+    }
 
     public void showMenu() {
         scanner.reset();
@@ -26,18 +34,19 @@ public class Main {
 
         var json = consumerApi.getData(fullAddress);
 
-        RickyMortyLocation location = translateData.getData(json, RickyMortyLocation.class);
-        System.out.println(location);
+        RickyMortyLocationRecord rmLocation = translateData.getData(json, RickyMortyLocationRecord.class);
+        RickyMortyLocation location = new RickyMortyLocation(rmLocation);
+        this.locationRepository.save(location);
 
-        List<RickyMortyCharacter> residents = new ArrayList<>();
-        List<RickyMortyEpisode> episodes = new ArrayList<>();
+        List<RickyMortyCharacterRecord> residents = new ArrayList<>();
+        List<RickyMortyEpisodeRecord> episodes = new ArrayList<>();
 
-        location.residents().forEach(c -> {
+        rmLocation.residents().forEach(c -> {
             var temp = consumerApi.getData(c);
-            RickyMortyCharacter character = translateData.getData(temp, RickyMortyCharacter.class);
+            RickyMortyCharacterRecord character = translateData.getData(temp, RickyMortyCharacterRecord.class);
             character.episodes().forEach(e -> {
                 var tempEpisode = consumerApi.getData(e);
-                RickyMortyEpisode episode = translateData.getData(tempEpisode, RickyMortyEpisode.class);
+                RickyMortyEpisodeRecord episode = translateData.getData(tempEpisode, RickyMortyEpisodeRecord.class);
                 episodes.add(episode);
                 showProgress();
             });
@@ -61,7 +70,7 @@ public class Main {
         System.out.print(".");
     }
 
-    private void topFiveCharacter(List<RickyMortyCharacter> residents) {
+    private void topFiveCharacter(List<RickyMortyCharacterRecord> residents) {
         System.out.println("Top 5 character with more episodes...");
 
         residents.stream()
