@@ -20,7 +20,7 @@ public class RickyMortyLocation {
     @Column
     private String dimension;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<RickyMortyCharacter> residents;
 
     public RickyMortyLocation() {
@@ -71,15 +71,20 @@ public class RickyMortyLocation {
     }
 
     public void setResidents(List<RickyMortyCharacter> residents) {
+        residents.forEach(r -> r.setLocation(this));
         this.residents = residents;
     }
 
     @Override
     public String toString() {
-        return "#%d Name: %s | Type: %s | Dimension: %s".formatted(
+        return """
+                #%d Name: %s | Type: %s | Dimension: %s
+                Characters: (%s)
+                """.formatted(
                 this.getId(),
                 this.getName(),
                 this.getType(),
-                this.getDimension());
+                this.getDimension(),
+                this.getResidents());
     }
 }

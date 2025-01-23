@@ -84,4 +84,9 @@ public class RickyMortyCharacter {
     public void setLocation(RickyMortyLocation location) {
         this.location = location;
     }
+
+    @Override
+    public String toString() {
+        return "%s".formatted(this.getName());
+    }
 }
