@@ -1,6 +1,8 @@
 package com.rickymorty.customer.view;
 
 import com.rickymorty.customer.models.*;
+import com.rickymorty.customer.repositories.ICharacterRepository;
+import com.rickymorty.customer.repositories.IEpisodeRepository;
 import com.rickymorty.customer.repositories.ILocationRepository;
 import com.rickymorty.customer.services.ConsumerApi;
 import com.rickymorty.customer.services.TranslateData;
@@ -13,14 +15,24 @@ public class Main {
 
     private final String ADDRESS_LOCATION = "https://rickandmortyapi.com/api/location/";
 
+    private final String ADDRESS_CHARACTER = "https://rickandmortyapi.com/api/character/";
+
     private final ConsumerApi consumerApi = new ConsumerApi();
 
     private final TranslateData translateData = new TranslateData();
 
     private final ILocationRepository locationRepository;
 
-    public Main(ILocationRepository iLocationRepository) {
+    private final ICharacterRepository characterRepository;
+
+    private final IEpisodeRepository episodeRepository;
+
+    public Main(ILocationRepository iLocationRepository,
+                ICharacterRepository iCharacterRepository,
+                IEpisodeRepository iEpisodeRepository) {
         this.locationRepository = iLocationRepository;
+        this.characterRepository = iCharacterRepository;
+        this.episodeRepository = iEpisodeRepository;
     }
 
     public void showMenu() {
@@ -31,6 +43,7 @@ public class Main {
             System.out.println("1 - Search Location");
             System.out.println("2 - List All Locations");
             System.out.println("3 - Search All Character by Location");
+            System.out.println("4 - Search All Episodes by Character");
             System.out.println("0 - Exit");
             option = scanner.nextInt();
 
@@ -43,6 +56,9 @@ public class Main {
                     break;
                 case 3:
                     this.searchCharacterByLocation();
+                    break;
+                case 4:
+                    this.searchEpisodesByCharacter();
                     break;
                 case 0:
                     break;
@@ -78,7 +94,7 @@ public class Main {
         List<RickyMortyLocation> locations = this.locationRepository.findAll();
         locations.forEach(System.out::println);
 
-        System.out.print("Choice a name location: ");
+        System.out.print("Choice a location ID: ");
         scanner.reset();
         Long locationId = scanner.nextLong();
 
@@ -105,6 +121,41 @@ public class Main {
             this.locationRepository.save(locationFinded);
         } else {
             System.out.println("Location not found!");
+        }
+    }
+
+    private void searchEpisodesByCharacter() {
+        List<RickyMortyLocation> locations = this.locationRepository.findAll();
+        locations.forEach(System.out::println);
+
+        System.out.print("Choice a character ID: ");
+        scanner.reset();
+        Long characterId = scanner.nextLong();
+
+        Optional<RickyMortyCharacter> character = locations.stream()
+                .flatMap(l -> l.getResidents().stream())
+                .filter(c -> c.getId().equals(characterId))
+                .findFirst();
+
+        if (character.isPresent()) {
+            RickyMortyCharacter characterFinded = character.get();
+            String url = ADDRESS_CHARACTER + "?name=" + characterFinded.getName().toLowerCase().replace(" ", "+");
+            String json = this.consumerApi.getData(url);
+            RickyMortyCharacterListRecord list = this.translateData.getData(json, RickyMortyCharacterListRecord.class);
+            List<RickyMortyEpisode> episodes = new ArrayList<>();
+            for (RickyMortyCharacterRecord record : list.characters()) {
+                for (String urlEpisode : record.episodes()) {
+                    json = this.consumerApi.getData(urlEpisode);
+                    RickyMortyEpisodeRecord episodeRecord = this.translateData.getData(json, RickyMortyEpisodeRecord.class);
+                    RickyMortyEpisode episode = new RickyMortyEpisode(episodeRecord);
+                    this.episodeRepository.save(episode);
+                    episodes.add(episode);
+                }
+            }
+            characterFinded.setEpisodes(episodes);
+            this.characterRepository.save(characterFinded);
+        } else {
+            System.out.println("Character not found");
         }
     }
 

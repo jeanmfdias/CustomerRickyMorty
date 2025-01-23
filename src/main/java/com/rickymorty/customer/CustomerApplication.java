@@ -1,5 +1,7 @@
 package com.rickymorty.customer;
 
+import com.rickymorty.customer.repositories.ICharacterRepository;
+import com.rickymorty.customer.repositories.IEpisodeRepository;
 import com.rickymorty.customer.repositories.ILocationRepository;
 import com.rickymorty.customer.view.Main;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +17,19 @@ public class CustomerApplication implements CommandLineRunner {
 	@Autowired
 	private ILocationRepository locationRepository;
 
+	@Autowired
+	private ICharacterRepository characterRepository;
+
+	@Autowired
+	private IEpisodeRepository episodeRepository;
+
 	public static void main(String[] args) {
 		SpringApplication.run(CustomerApplication.class, args);
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		Main main = new Main(locationRepository);
+		Main main = new Main(locationRepository, characterRepository, episodeRepository);
 		main.showMenu();
 	}
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.OptionalInt;
 
 @Entity
@@ -24,6 +25,13 @@ public class RickyMortyEpisode {
 
     @Column
     private int season;
+
+    @ManyToMany(mappedBy = "episodes")
+    private List<RickyMortyCharacter> characters;
+
+    public RickyMortyEpisode() {
+
+    }
 
     public RickyMortyEpisode(RickyMortyEpisodeRecord episode) {
         this.name = episode.name();
@@ -73,5 +81,13 @@ public class RickyMortyEpisode {
 
     public void setSeason(int season) {
         this.season = season;
+    }
+
+    public List<RickyMortyCharacter> getCharacters() {
+        return characters;
+    }
+
+    public void setCharacters(List<RickyMortyCharacter> characters) {
+        this.characters = characters;
     }
 }

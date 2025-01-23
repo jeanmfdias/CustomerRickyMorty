@@ -20,8 +20,13 @@ public class RickyMortyCharacter {
     @Column(nullable = false)
     private String species;
 
-    @Transient
-    private List<String> episodes;
+    @ManyToMany
+    @JoinTable(
+            name = "characters_episodes",
+            joinColumns = @JoinColumn(name = "character_id"),
+            inverseJoinColumns = @JoinColumn(name = "episode_id")
+    )
+    private List<RickyMortyEpisode> episodes;
 
     @ManyToOne
     private RickyMortyLocation location;
@@ -34,7 +39,7 @@ public class RickyMortyCharacter {
         this.name = character.name();
         this.status = character.status();
         this.species = character.species();
-        this.episodes = character.episodes();
+//        this.episodes = character.episodes();
     }
 
     public Long getId() {
@@ -69,11 +74,11 @@ public class RickyMortyCharacter {
         this.species = species;
     }
 
-    public List<String> getEpisodes() {
+    public List<RickyMortyEpisode> getEpisodes() {
         return episodes;
     }
 
-    public void setEpisodes(List<String> episodes) {
+    public void setEpisodes(List<RickyMortyEpisode> episodes) {
         this.episodes = episodes;
     }
 
@@ -87,6 +92,6 @@ public class RickyMortyCharacter {
 
     @Override
     public String toString() {
-        return "%s".formatted(this.getName());
+        return "#%d | %s".formatted(this.getId(), this.getName());
     }
 }
