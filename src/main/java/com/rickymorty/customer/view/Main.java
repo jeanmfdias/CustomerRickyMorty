@@ -44,6 +44,7 @@ public class Main {
             System.out.println("2 - List All Locations");
             System.out.println("3 - Search All Character by Location");
             System.out.println("4 - Search All Episodes by Character");
+            System.out.println("5 - List All Episodes");
             System.out.println("0 - Exit");
             option = scanner.nextInt();
 
@@ -59,6 +60,9 @@ public class Main {
                     break;
                 case 4:
                     this.searchEpisodesByCharacter();
+                    break;
+                case 5:
+                    this.listAllEpisodes();
                     break;
                 case 0:
                     break;
@@ -88,6 +92,13 @@ public class Main {
     private void listAllLocations() {
         List<RickyMortyLocation> locations = this.locationRepository.findAll();
         locations.stream().forEach(System.out::println);
+    }
+
+    private void listAllEpisodes() {
+        List<RickyMortyEpisode> episodes = this.episodeRepository.findAll();
+        episodes.stream()
+                .sorted(Comparator.comparing(RickyMortyEpisode::getAirDate))
+                .forEach(System.out::println);
     }
 
     private void searchCharacterByLocation() {

@@ -26,7 +26,7 @@ public class RickyMortyEpisode {
     @Column
     private int season;
 
-    @ManyToMany(mappedBy = "episodes")
+    @ManyToMany(mappedBy = "episodes", fetch = FetchType.EAGER)
     private List<RickyMortyCharacter> characters;
 
     public RickyMortyEpisode() {
@@ -89,5 +89,12 @@ public class RickyMortyEpisode {
 
     public void setCharacters(List<RickyMortyCharacter> characters) {
         this.characters = characters;
+    }
+
+    @Override
+    public String toString() {
+        return """
+                S%dE%d - %s
+                Characters: (%s)""".formatted(this.getSeason(), this.getEpisodeNumber(), this.getName(), this.getCharacters());
     }
 }
