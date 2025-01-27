@@ -46,6 +46,7 @@ public class Main {
             System.out.println("4 - Search All Episodes by Character");
             System.out.println("5 - List All Episodes");
             System.out.println("6 - Search Character by name");
+            System.out.println("7 - Search Character by Location name");
             System.out.println("0 - Exit");
             option = scanner.nextInt();
 
@@ -67,6 +68,9 @@ public class Main {
                     break;
                 case 6:
                     this.findCharacterByName();
+                    break;
+                case 7:
+                    this.findCharacterByLocationName();
                     break;
                 case 0:
                     break;
@@ -228,5 +232,16 @@ public class Main {
         } else {
             System.out.println("Character not found!");
         }
+    }
+
+    private void findCharacterByLocationName() {
+        System.out.println("Type a location name: ");
+        this.scanner.reset();
+        this.scanner.nextLine();
+        String name = this.scanner.nextLine();
+
+        List<RickyMortyCharacter> characterList = this.characterRepository.findByLocationNameContainingIgnoreCase(name);
+
+        System.out.println(characterList);
     }
 }
