@@ -94,4 +94,9 @@ public class RickyMortyCharacter {
     public String toString() {
         return "#%d | %s".formatted(this.getId(), this.getName());
     }
+
+    public String toStringFull() {
+        return "#%d | Name: %s | Status: %s | Species: %s | Actual location: %s".formatted(this.getId(),
+                this.getName(), this.getStatus(), this.getSpecies(), this.getLocation().getName());
+    }
 }
