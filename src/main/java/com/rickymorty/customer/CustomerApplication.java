@@ -13,23 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
-public class CustomerApplication implements CommandLineRunner {
-	@Autowired
-	private ILocationRepository locationRepository;
-
-	@Autowired
-	private ICharacterRepository characterRepository;
-
-	@Autowired
-	private IEpisodeRepository episodeRepository;
-
+public class CustomerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CustomerApplication.class, args);
-	}
-
-	@Override
-	public void run(String... args) throws Exception {
-		Main main = new Main(locationRepository, characterRepository, episodeRepository);
-		main.showMenu();
 	}
 }
