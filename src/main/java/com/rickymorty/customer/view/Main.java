@@ -40,8 +40,6 @@ public class Main {
         int option = -1;
         while (option != 0) {
             System.out.println("Choose a option: ");
-            System.out.println("1 - Search Location");
-            System.out.println("2 - List All Locations");
             System.out.println("3 - Search All Character by Location");
             System.out.println("4 - Search All Episodes by Character");
             System.out.println("5 - List All Episodes");
@@ -51,12 +49,6 @@ public class Main {
             option = scanner.nextInt();
 
             switch (option) {
-                case 1:
-                    this.searchLocation();
-                    break;
-                case 2:
-                    this.listAllLocations();
-                    break;
                 case 3:
                     this.searchCharacterByLocation();
                     break;
@@ -78,28 +70,6 @@ public class Main {
                     System.out.println("Invalid option");
             }
         }
-    }
-
-    private void searchLocation() {
-        scanner.reset();
-        System.out.print("Type location ID: ");
-        int locationId = scanner.nextInt();
-        RickyMortyLocation location = this.getOneLocation(locationId);
-        this.locationRepository.save(location);
-    }
-
-    private RickyMortyLocation getOneLocation(int locationId) {
-        String fullAddress = ADDRESS_LOCATION + locationId;
-
-        var json = consumerApi.getData(fullAddress);
-
-        RickyMortyLocationRecord rmLocation = translateData.getData(json, RickyMortyLocationRecord.class);
-        return new RickyMortyLocation(rmLocation);
-    }
-
-    private void listAllLocations() {
-        List<RickyMortyLocation> locations = this.locationRepository.findAll();
-        locations.stream().forEach(System.out::println);
     }
 
     private void listAllEpisodes() {
