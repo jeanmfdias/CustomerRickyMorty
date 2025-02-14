@@ -1,6 +1,7 @@
 package com.rickymorty.customer.services;
 
 import com.rickymorty.customer.contracts.IConsumer;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -8,6 +9,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+@Service
 public class ConsumerApi implements IConsumer {
     @Override
     public String getData(String address) {
