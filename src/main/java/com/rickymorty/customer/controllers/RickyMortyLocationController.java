@@ -12,17 +12,18 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/locations")
 public class RickyMortyLocationController {
     @Autowired
     private RickyMortyLocationService rickyMortyLocationService;
 
-    @GetMapping("/locations")
+    @GetMapping
     public ResponseEntity<List<RickyMortyLocationDTO>> getLocations() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(rickyMortyLocationService.getAll());
     }
 
-    @GetMapping("/locations/save-from-web/{locationId}")
+    @PostMapping("/save-from-web/{locationId}")
     public ResponseEntity<Map<String, String>> saveLocationsFromWeb(@PathVariable int locationId) {
         Map<String, String> result = new HashMap<>();
         result.put("message", "Error on save location");

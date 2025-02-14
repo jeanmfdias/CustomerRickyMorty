@@ -7,7 +7,9 @@ import com.rickymorty.customer.repositories.ILocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +38,15 @@ public class RickyMortyLocationService {
     public List<RickyMortyLocationDTO> getAll() {
         return this.locationRepository.findAll()
                 .stream()
-                .map(l -> new RickyMortyLocationDTO(l.getId(), l.getName(), l.getType(), l.getDimension(), l.getResidents()))
+                .map(l -> new RickyMortyLocationDTO(l.getId(), l.getName(), l.getType(), l.getDimension(), l.getResidents()
+                        .stream()
+                        .map(r -> {
+                            Map<String, Object> map = new HashMap<>();
+                            map.put("id", r.getId());
+                            map.put("name", r.getName());
+                            return map;
+                        })
+                        .collect(Collectors.toList())))
                 .collect(Collectors.toList());
     }
 

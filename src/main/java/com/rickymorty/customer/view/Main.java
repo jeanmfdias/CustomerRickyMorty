@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 public class Main {
     private final Scanner scanner = new Scanner(System.in);
 
-    private final String ADDRESS_LOCATION = "https://rickandmortyapi.com/api/location/";
-
     private final String ADDRESS_CHARACTER = "https://rickandmortyapi.com/api/character/";
 
     private final ConsumerApi consumerApi = new ConsumerApi();
@@ -40,7 +38,6 @@ public class Main {
         int option = -1;
         while (option != 0) {
             System.out.println("Choose a option: ");
-            System.out.println("3 - Search All Character by Location");
             System.out.println("4 - Search All Episodes by Character");
             System.out.println("5 - List All Episodes");
             System.out.println("6 - Search Character by name");
@@ -49,9 +46,6 @@ public class Main {
             option = scanner.nextInt();
 
             switch (option) {
-                case 3:
-                    this.searchCharacterByLocation();
-                    break;
                 case 4:
                     this.searchEpisodesByCharacter();
                     break;
@@ -77,40 +71,6 @@ public class Main {
         episodes.stream()
                 .sorted(Comparator.comparing(RickyMortyEpisode::getAirDate))
                 .forEach(System.out::println);
-    }
-
-    private void searchCharacterByLocation() {
-        List<RickyMortyLocation> locations = this.locationRepository.findAll();
-        locations.forEach(System.out::println);
-
-        System.out.print("Choice a location ID: ");
-        scanner.reset();
-        Long locationId = scanner.nextLong();
-
-        Optional<RickyMortyLocation> location = locations.stream()
-                .filter(l -> l.getId().equals(locationId))
-                .findFirst();
-
-        if (location.isPresent()) {
-            RickyMortyLocation locationFinded = location.get();
-            String url = ADDRESS_LOCATION + "?name=" + locationFinded.getName().toLowerCase().replace(" ", "+");
-            String json = this.consumerApi.getData(url);
-            RickyMortyLocationListRecord locationRecords = this.translateData.getData(json, RickyMortyLocationListRecord.class);
-            List<RickyMortyCharacter> characters = new ArrayList<>();
-            for (RickyMortyLocationRecord record : locationRecords.locations()) {
-                for (String urlCharacter : record.residents()) {
-                    json = this.consumerApi.getData(urlCharacter);
-                    RickyMortyCharacterRecord characterRecord = this.translateData.getData(json, RickyMortyCharacterRecord.class);
-                    RickyMortyCharacter character = new RickyMortyCharacter(characterRecord);
-                    characters.add(character);
-                    showProgress();
-                }
-            }
-            locationFinded.setResidents(characters);
-            this.locationRepository.save(locationFinded);
-        } else {
-            System.out.println("Location not found!");
-        }
     }
 
     private void searchEpisodesByCharacter() {
