@@ -35,7 +35,7 @@ public class RickyMortyLocationController {
 
     @GetMapping("/locations/save-from-web")
     public ResponseEntity<Map<String, String>> saveLocationsFromWeb() {
-        RickyMortyLocation location = this.rickyMortyLocationService.getOneLocation(2);
+        RickyMortyLocation location = this.rickyMortyLocationService.getOneLocation(3);
         this.locationRepository.save(location);
         Map<String, String> result = new HashMap<>();
         result.put("message", "Location created with sucess");
