@@ -20,25 +20,23 @@ import java.util.stream.Collectors;
 @RestController
 public class RickyMortyLocationController {
     @Autowired
-    private ILocationRepository locationRepository;
-
-    private final RickyMortyLocationService rickyMortyLocationService = new RickyMortyLocationService();
+    private RickyMortyLocationService rickyMortyLocationService;
 
     @GetMapping("/locations")
     public ResponseEntity<List<RickyMortyLocationDTO>> getLocations() {
-        List<RickyMortyLocationDTO> locations = this.locationRepository.findAll()
-                .stream()
-                .map(l -> new RickyMortyLocationDTO(l.getId(), l.getName(), l.getType(), l.getDimension(), l.getResidents()))
-                .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(locations);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(rickyMortyLocationService.getAll());
     }
 
     @GetMapping("/locations/save-from-web")
     public ResponseEntity<Map<String, String>> saveLocationsFromWeb() {
-        RickyMortyLocation location = this.rickyMortyLocationService.getOneLocation(3);
-        this.locationRepository.save(location);
         Map<String, String> result = new HashMap<>();
-        result.put("message", "Location created with sucess");
+        result.put("message", "Error on save location");
+
+        boolean saveWithSuccess = rickyMortyLocationService.saveLocationFromWeb(4);
+        if (saveWithSuccess) {
+            result.put("message", "Location created with success");
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 }
