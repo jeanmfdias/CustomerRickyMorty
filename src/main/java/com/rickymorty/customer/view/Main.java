@@ -55,9 +55,6 @@ public class Main {
                 case 6:
                     this.findCharacterByName();
                     break;
-                case 7:
-                    this.findCharacterByLocationName();
-                    break;
                 case 0:
                     break;
                 default:
@@ -162,16 +159,5 @@ public class Main {
         } else {
             System.out.println("Character not found!");
         }
-    }
-
-    private void findCharacterByLocationName() {
-        System.out.println("Type a location name: ");
-        this.scanner.reset();
-        this.scanner.nextLine();
-        String name = this.scanner.nextLine();
-
-        List<RickyMortyCharacter> characterList = this.characterRepository.findByLocationNameContainingIgnoreCase(name);
-
-        System.out.println(characterList);
     }
 }

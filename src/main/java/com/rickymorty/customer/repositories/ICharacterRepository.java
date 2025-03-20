@@ -10,4 +10,6 @@ public interface ICharacterRepository extends JpaRepository<RickyMortyCharacter,
     Optional<RickyMortyCharacter> findByNameContainingIgnoreCase(String name);
 
     List<RickyMortyCharacter> findByLocationNameContainingIgnoreCase(String name);
+
+    Long countByLocationId(Long id);
 }

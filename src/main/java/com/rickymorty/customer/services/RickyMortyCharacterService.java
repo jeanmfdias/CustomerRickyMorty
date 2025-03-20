@@ -1,6 +1,7 @@
 package com.rickymorty.customer.services;
 
 import com.rickymorty.customer.models.*;
+import com.rickymorty.customer.repositories.ICharacterRepository;
 import com.rickymorty.customer.repositories.ILocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ import java.util.Optional;
 public class RickyMortyCharacterService {
     @Autowired
     private ILocationRepository locationRepository;
+
+    @Autowired
+    private ICharacterRepository characterRepository;
 
     @Autowired
     private ConsumerApi consumerApi;
@@ -52,5 +56,13 @@ public class RickyMortyCharacterService {
             return true;
         }
         return false;
+    }
+
+    public Long getCountByLocationId(Long locationId) {
+        return this.characterRepository.countByLocationId(locationId);
+    }
+
+    public List<RickyMortyCharacter> getAllByLocationName(String locationName) {
+        return this.characterRepository.findByLocationNameContainingIgnoreCase(locationName);
     }
 }
