@@ -29,5 +29,24 @@ services:
       postgres:
         condition: service_healthy
 
+  test:
+    image: maven:3.9-eclipse-temurin-21
+    container_name: customer_ricky_morty_test
+    working_dir: /app
+    volumes:
+      - .:/app
+      - maven_cache:/root/.m2
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/customer_ricky_morty
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: mvn test
+    profiles:
+      - test
+
 volumes:
   postgres_data:
+  maven_cache:
