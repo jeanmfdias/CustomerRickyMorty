@@ -1,7 +1,13 @@
 package com.rickymorty.customer.repositories;
 
 import com.rickymorty.customer.models.RickAndMortyEpisode;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface IEpisodeRepository extends JpaRepository<RickAndMortyEpisode, Long> {
+
+    Page<RickAndMortyEpisode> findAllByOrderByAirDateAsc(Pageable pageable);
+
+    Page<RickAndMortyEpisode> findByNameContainingIgnoreCaseOrderByAirDateAsc(String name, Pageable pageable);
 }

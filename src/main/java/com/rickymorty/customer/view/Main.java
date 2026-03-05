@@ -39,7 +39,6 @@ public class Main {
         while (option != 0) {
             System.out.println("Choose a option: ");
             System.out.println("4 - Search All Episodes by Character");
-            System.out.println("5 - List All Episodes");
             System.out.println("7 - Search Character by Location name");
             System.out.println("0 - Exit");
             option = scanner.nextInt();
@@ -48,22 +47,12 @@ public class Main {
                 case 4:
                     this.searchEpisodesByCharacter();
                     break;
-                case 5:
-                    this.listAllEpisodes();
-                    break;
                 case 0:
                     break;
                 default:
                     System.out.println("Invalid option");
             }
         }
-    }
-
-    private void listAllEpisodes() {
-        List<RickAndMortyEpisode> episodes = this.episodeRepository.findAll();
-        episodes.stream()
-                .sorted(Comparator.comparing(RickAndMortyEpisode::getAirDate))
-                .forEach(System.out::println);
     }
 
     private void searchEpisodesByCharacter() {
