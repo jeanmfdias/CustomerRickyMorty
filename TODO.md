@@ -124,10 +124,10 @@ Remove `TRACE` and `CONNECT` from allowed methods — they are not used in REST 
 
 ## Missing Features (Low Priority)
 
-### 15. No unit tests
-Only a context-load test exists. Add:
-- Service tests with Mockito
-- Controller tests with `MockMvc`
+### ~~15. No unit tests~~ ✅ Done
+~~Only a context-load test exists. Add:~~
+~~- Service tests with Mockito~~
+~~- Controller tests with `MockMvc`~~
 
 ### 16. No input validation
 Endpoints accept any value without validation. Use `@Valid`, `@Positive`, `@NotBlank` with Bean Validation.
