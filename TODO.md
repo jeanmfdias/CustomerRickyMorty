@@ -89,8 +89,8 @@ Mixes `@JsonAlias` and `@JsonProperty`. Use `@JsonProperty` consistently, especi
 ### 10. Inconsistent DTO naming
 `RickyMortyCharacterDto` uses lowercase `to` while `RickyMortyLocationDTO` uses uppercase. Pick one convention.
 
-### 11. Typo in class/package names
-The character's name is **Rick**, not **Ricky**. All classes use `RickyMorty` — consider renaming to `RickMorty` or `RickAndMorty`.
+### ~~11. Typo in class/package names~~ ✅ Done
+~~The character's name is **Rick**, not **Ricky**. All classes use `RickyMorty` — consider renaming to `RickMorty` or `RickAndMorty`.~~
 
 ---
 
