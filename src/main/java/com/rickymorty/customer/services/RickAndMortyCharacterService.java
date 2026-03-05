@@ -4,6 +4,8 @@ import com.rickymorty.customer.models.*;
 import com.rickymorty.customer.repositories.ICharacterRepository;
 import com.rickymorty.customer.repositories.ILocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -70,7 +72,10 @@ public class RickAndMortyCharacterService {
         return this.characterRepository.findByNameContainingIgnoreCase(name);
     }
 
-    public List<RickAndMortyCharacter> getAllByLocationId(Long locationId) {
-        return this.characterRepository.findByLocationId(locationId);
+    public Page<RickAndMortyCharacter> getAllByLocationId(Long locationId, String name, Pageable pageable) {
+        if (name != null && !name.isBlank()) {
+            return this.characterRepository.findByLocationIdAndNameContainingIgnoreCase(locationId, name, pageable);
+        }
+        return this.characterRepository.findByLocationId(locationId, pageable);
     }
 }

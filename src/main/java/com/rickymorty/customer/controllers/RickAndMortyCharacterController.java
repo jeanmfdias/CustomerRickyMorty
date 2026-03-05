@@ -7,8 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.Optional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,9 +48,14 @@ public class RickAndMortyCharacterController {
     }
 
     @GetMapping("/location/{locationId}")
-    public ResponseEntity<List<RickAndMortyCharacterDto>> getByLocationId(@PathVariable Long locationId) {
-        var response = this.rickAndMortyCharacterService.getAllByLocationId(locationId)
-                .stream().map(RickAndMortyCharacterDto::new).toList();
+    public ResponseEntity<Page<RickAndMortyCharacterDto>> getByLocationId(
+            @PathVariable Long locationId,
+            @RequestParam(required = false) String name,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        var response = this.rickAndMortyCharacterService
+                .getAllByLocationId(locationId, name, PageRequest.of(page, size))
+                .map(RickAndMortyCharacterDto::new);
 
         return ResponseEntity.ok(response);
     }
