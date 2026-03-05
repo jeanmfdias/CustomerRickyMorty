@@ -12,4 +12,6 @@ public interface ICharacterRepository extends JpaRepository<RickAndMortyCharacte
     List<RickAndMortyCharacter> findByLocationNameContainingIgnoreCase(String name);
 
     Long countByLocationId(Long id);
+
+    List<RickAndMortyCharacter> findByLocationId(Long locationId);
 }

@@ -45,6 +45,14 @@ public class RickAndMortyCharacterController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/location/{locationId}")
+    public ResponseEntity<List<RickAndMortyCharacterDto>> getByLocationId(@PathVariable Long locationId) {
+        var response = this.rickAndMortyCharacterService.getAllByLocationId(locationId)
+                .stream().map(RickAndMortyCharacterDto::new).toList();
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/name")
     public ResponseEntity<RickAndMortyCharacterDto> getByName(@RequestParam String name) {
         Optional<RickAndMortyCharacterDto> response = this.rickAndMortyCharacterService

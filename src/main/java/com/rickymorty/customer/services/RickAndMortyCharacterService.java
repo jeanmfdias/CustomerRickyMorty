@@ -69,4 +69,8 @@ public class RickAndMortyCharacterService {
     public Optional<RickAndMortyCharacter> findByName(String name) {
         return this.characterRepository.findByNameContainingIgnoreCase(name);
     }
+
+    public List<RickAndMortyCharacter> getAllByLocationId(Long locationId) {
+        return this.characterRepository.findByLocationId(locationId);
+    }
 }
