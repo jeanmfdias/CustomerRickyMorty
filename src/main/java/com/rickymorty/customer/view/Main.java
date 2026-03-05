@@ -64,36 +64,36 @@ public class Main {
     }
 
     private void listAllEpisodes() {
-        List<RickyMortyEpisode> episodes = this.episodeRepository.findAll();
+        List<RickAndMortyEpisode> episodes = this.episodeRepository.findAll();
         episodes.stream()
-                .sorted(Comparator.comparing(RickyMortyEpisode::getAirDate))
+                .sorted(Comparator.comparing(RickAndMortyEpisode::getAirDate))
                 .forEach(System.out::println);
     }
 
     private void searchEpisodesByCharacter() {
-        List<RickyMortyLocation> locations = this.locationRepository.findAll();
+        List<RickAndMortyLocation> locations = this.locationRepository.findAll();
         locations.forEach(System.out::println);
 
         System.out.print("Choice a character ID: ");
         scanner.reset();
         Long characterId = scanner.nextLong();
 
-        Optional<RickyMortyCharacter> character = locations.stream()
+        Optional<RickAndMortyCharacter> character = locations.stream()
                 .flatMap(l -> l.getResidents().stream())
                 .filter(c -> c.getId().equals(characterId))
                 .findFirst();
 
         if (character.isPresent()) {
-            RickyMortyCharacter characterFinded = character.get();
+            RickAndMortyCharacter characterFinded = character.get();
             String url = ADDRESS_CHARACTER + "?name=" + characterFinded.getName().toLowerCase().replace(" ", "+");
             String json = this.consumerApi.getData(url);
-            RickyMortyCharacterListRecord list = this.translateData.getData(json, RickyMortyCharacterListRecord.class);
-            List<RickyMortyEpisode> episodes = new ArrayList<>();
-            for (RickyMortyCharacterRecord record : list.characters()) {
+            RickAndMortyCharacterListRecord list = this.translateData.getData(json, RickAndMortyCharacterListRecord.class);
+            List<RickAndMortyEpisode> episodes = new ArrayList<>();
+            for (RickAndMortyCharacterRecord record : list.characters()) {
                 for (String urlEpisode : record.episodes()) {
                     json = this.consumerApi.getData(urlEpisode);
-                    RickyMortyEpisodeRecord episodeRecord = this.translateData.getData(json, RickyMortyEpisodeRecord.class);
-                    RickyMortyEpisode episode = new RickyMortyEpisode(episodeRecord);
+                    RickAndMortyEpisodeRecord episodeRecord = this.translateData.getData(json, RickAndMortyEpisodeRecord.class);
+                    RickAndMortyEpisode episode = new RickAndMortyEpisode(episodeRecord);
                     this.episodeRepository.save(episode);
                     episodes.add(episode);
                 }
@@ -105,16 +105,16 @@ public class Main {
         }
     }
 
-    private void showEpisodesAndCharacters(RickyMortyLocationRecord rickyMortyLocationRecord) {
-        List<RickyMortyCharacterRecord> residents = new ArrayList<>();
-        List<RickyMortyEpisodeRecord> episodes = new ArrayList<>();
+    private void showEpisodesAndCharacters(RickAndMortyLocationRecord rickAndMortyLocationRecord) {
+        List<RickAndMortyCharacterRecord> residents = new ArrayList<>();
+        List<RickAndMortyEpisodeRecord> episodes = new ArrayList<>();
 
-        rickyMortyLocationRecord.residents().forEach(c -> {
+        rickAndMortyLocationRecord.residents().forEach(c -> {
             var temp = consumerApi.getData(c);
-            RickyMortyCharacterRecord character = translateData.getData(temp, RickyMortyCharacterRecord.class);
+            RickAndMortyCharacterRecord character = translateData.getData(temp, RickAndMortyCharacterRecord.class);
             character.episodes().forEach(e -> {
                 var tempEpisode = consumerApi.getData(e);
-                RickyMortyEpisodeRecord episode = translateData.getData(tempEpisode, RickyMortyEpisodeRecord.class);
+                RickAndMortyEpisodeRecord episode = translateData.getData(tempEpisode, RickAndMortyEpisodeRecord.class);
                 episodes.add(episode);
                 showProgress();
             });
@@ -136,7 +136,7 @@ public class Main {
         System.out.print(".");
     }
 
-    private void topFiveCharacter(List<RickyMortyCharacterRecord> residents) {
+    private void topFiveCharacter(List<RickAndMortyCharacterRecord> residents) {
         System.out.println("Top 5 character with more episodes...");
 
         residents.stream()
@@ -152,7 +152,7 @@ public class Main {
         this.scanner.nextLine();
         String name = this.scanner.nextLine();
 
-        Optional<RickyMortyCharacter> character = this.characterRepository.findByNameContainingIgnoreCase(name);
+        Optional<RickAndMortyCharacter> character = this.characterRepository.findByNameContainingIgnoreCase(name);
 
         if (character.isPresent()) {
             System.out.println(character.get().toStringFull());

@@ -9,7 +9,7 @@ import java.util.OptionalInt;
 
 @Entity
 @Table(name = "episodes")
-public class RickyMortyEpisode {
+public class RickAndMortyEpisode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,13 +27,13 @@ public class RickyMortyEpisode {
     private int season;
 
     @ManyToMany(mappedBy = "episodes", fetch = FetchType.EAGER)
-    private List<RickyMortyCharacter> characters;
+    private List<RickAndMortyCharacter> characters;
 
-    public RickyMortyEpisode() {
+    public RickAndMortyEpisode() {
 
     }
 
-    public RickyMortyEpisode(RickyMortyEpisodeRecord episode) {
+    public RickAndMortyEpisode(RickAndMortyEpisodeRecord episode) {
         this.name = episode.name();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
@@ -83,11 +83,11 @@ public class RickyMortyEpisode {
         this.season = season;
     }
 
-    public List<RickyMortyCharacter> getCharacters() {
+    public List<RickAndMortyCharacter> getCharacters() {
         return characters;
     }
 
-    public void setCharacters(List<RickyMortyCharacter> characters) {
+    public void setCharacters(List<RickAndMortyCharacter> characters) {
         this.characters = characters;
     }
 

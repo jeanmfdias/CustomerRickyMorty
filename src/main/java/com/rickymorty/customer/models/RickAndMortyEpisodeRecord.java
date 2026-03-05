@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record RickyMortyEpisodeRecord(@JsonAlias("name") String name,
+public record RickAndMortyEpisodeRecord(@JsonAlias("name") String name,
                                       @JsonProperty("air_date") String airDate,
                                       @JsonAlias("episode") String episode) {
 }

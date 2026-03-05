@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RickyMortyCharacterService {
+public class RickAndMortyCharacterService {
     @Autowired
     private ILocationRepository locationRepository;
 
@@ -27,23 +27,23 @@ public class RickyMortyCharacterService {
     private final String ADDRESS_LOCATION = "https://rickandmortyapi.com/api/location/";
 
     public boolean saveCharacterByLocation(Long locationId) {
-        Optional<RickyMortyLocation> location = this.locationRepository.findById(locationId);;
+        Optional<RickAndMortyLocation> location = this.locationRepository.findById(locationId);;
 
         if (location.isPresent()) {
-            RickyMortyLocation locationFinded = location.get();
+            RickAndMortyLocation locationFinded = location.get();
 
             String url = ADDRESS_LOCATION + "?name=" + locationFinded.getName().toLowerCase().replace(" ", "+");
             String json = this.consumerApi.getData(url);
-            RickyMortyLocationListRecord locationRecords = this.translateData.getData(json, RickyMortyLocationListRecord.class);
+            RickAndMortyLocationListRecord locationRecords = this.translateData.getData(json, RickAndMortyLocationListRecord.class);
 
-            List<RickyMortyCharacter> characters = new ArrayList<>();
-            for (RickyMortyLocationRecord record : locationRecords.locations()) {
+            List<RickAndMortyCharacter> characters = new ArrayList<>();
+            for (RickAndMortyLocationRecord record : locationRecords.locations()) {
                 for (String urlCharacter : record.residents()) {
                     json = this.consumerApi.getData(urlCharacter);
-                    RickyMortyCharacterRecord characterRecord = this.translateData.getData(json, RickyMortyCharacterRecord.class);
-                    RickyMortyCharacter character = new RickyMortyCharacter(characterRecord);
+                    RickAndMortyCharacterRecord characterRecord = this.translateData.getData(json, RickAndMortyCharacterRecord.class);
+                    RickAndMortyCharacter character = new RickAndMortyCharacter(characterRecord);
 
-                    Optional<RickyMortyCharacter> exists = characters.stream()
+                    Optional<RickAndMortyCharacter> exists = characters.stream()
                             .filter(c -> c.getName().toLowerCase().equals(character.getName().toLowerCase()))
                             .findFirst();
                     if (exists.isEmpty()) {
@@ -62,7 +62,7 @@ public class RickyMortyCharacterService {
         return this.characterRepository.countByLocationId(locationId);
     }
 
-    public List<RickyMortyCharacter> getAllByLocationName(String locationName) {
+    public List<RickAndMortyCharacter> getAllByLocationName(String locationName) {
         return this.characterRepository.findByLocationNameContainingIgnoreCase(locationName);
     }
 }

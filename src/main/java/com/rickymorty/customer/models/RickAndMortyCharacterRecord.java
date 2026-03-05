@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record RickyMortyCharacterRecord(@JsonAlias("name") String name,
+public record RickAndMortyCharacterRecord(@JsonAlias("name") String name,
                                         @JsonAlias("status") String status,
                                         @JsonAlias("species") String species,
                                         @JsonAlias("episode") List<String> episodes) {

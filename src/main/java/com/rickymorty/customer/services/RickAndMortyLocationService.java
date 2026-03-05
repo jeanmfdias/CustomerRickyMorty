@@ -1,8 +1,8 @@
 package com.rickymorty.customer.services;
 
-import com.rickymorty.customer.dto.RickyMortyLocationDTO;
-import com.rickymorty.customer.models.RickyMortyLocation;
-import com.rickymorty.customer.models.RickyMortyLocationRecord;
+import com.rickymorty.customer.dto.RickAndMortyLocationDTO;
+import com.rickymorty.customer.models.RickAndMortyLocation;
+import com.rickymorty.customer.models.RickAndMortyLocationRecord;
 import com.rickymorty.customer.repositories.ILocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class RickyMortyLocationService {
+public class RickAndMortyLocationService {
 
     @Autowired
     private ILocationRepository locationRepository;
@@ -26,19 +26,19 @@ public class RickyMortyLocationService {
 
     private final String ADDRESS_LOCATION = "https://rickandmortyapi.com/api/location/";
 
-    public RickyMortyLocation getOneLocation(int locationId) {
+    public RickAndMortyLocation getOneLocation(int locationId) {
         String fullAddress = ADDRESS_LOCATION + locationId;
 
         var json = this.consumerApi.getData(fullAddress);
 
-        RickyMortyLocationRecord rmLocation = translateData.getData(json, RickyMortyLocationRecord.class);
-        return new RickyMortyLocation(rmLocation);
+        RickAndMortyLocationRecord rmLocation = translateData.getData(json, RickAndMortyLocationRecord.class);
+        return new RickAndMortyLocation(rmLocation);
     }
 
-    public List<RickyMortyLocationDTO> getAll() {
+    public List<RickAndMortyLocationDTO> getAll() {
         return this.locationRepository.findAll()
                 .stream()
-                .map(l -> new RickyMortyLocationDTO(l.getId(), l.getName(), l.getType(), l.getDimension(), l.getResidents()
+                .map(l -> new RickAndMortyLocationDTO(l.getId(), l.getName(), l.getType(), l.getDimension(), l.getResidents()
                         .stream()
                         .map(r -> {
                             Map<String, Object> map = new HashMap<>();
@@ -52,7 +52,7 @@ public class RickyMortyLocationService {
 
     public boolean saveLocationFromWeb(int id) {
         try {
-            RickyMortyLocation location = this.getOneLocation(id);
+            RickAndMortyLocation location = this.getOneLocation(id);
             this.locationRepository.save(location);
             return true;
         } catch (Exception e) {

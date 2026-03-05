@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "locations")
-public class RickyMortyLocation {
+public class RickAndMortyLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,13 +21,13 @@ public class RickyMortyLocation {
     private String dimension;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<RickyMortyCharacter> residents;
+    private List<RickAndMortyCharacter> residents;
 
-    public RickyMortyLocation() {
+    public RickAndMortyLocation() {
 
     }
 
-    public RickyMortyLocation(RickyMortyLocationRecord location) {
+    public RickAndMortyLocation(RickAndMortyLocationRecord location) {
         this.name = location.name();
         this.type = location.type();
         this.dimension = location.dimension();
@@ -66,11 +66,11 @@ public class RickyMortyLocation {
         this.dimension = dimension;
     }
 
-    public List<RickyMortyCharacter> getResidents() {
+    public List<RickAndMortyCharacter> getResidents() {
         return residents;
     }
 
-    public void setResidents(List<RickyMortyCharacter> residents) {
+    public void setResidents(List<RickAndMortyCharacter> residents) {
         residents.forEach(r -> r.setLocation(this));
         this.residents = residents;
     }

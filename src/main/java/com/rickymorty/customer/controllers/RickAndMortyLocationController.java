@@ -1,7 +1,7 @@
 package com.rickymorty.customer.controllers;
 
-import com.rickymorty.customer.dto.RickyMortyLocationDTO;
-import com.rickymorty.customer.services.RickyMortyLocationService;
+import com.rickymorty.customer.dto.RickAndMortyLocationDTO;
+import com.rickymorty.customer.services.RickAndMortyLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,14 +13,14 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/locations")
-public class RickyMortyLocationController {
+public class RickAndMortyLocationController {
     @Autowired
-    private RickyMortyLocationService rickyMortyLocationService;
+    private RickAndMortyLocationService rickAndMortyLocationService;
 
     @GetMapping
-    public ResponseEntity<List<RickyMortyLocationDTO>> getLocations() {
+    public ResponseEntity<List<RickAndMortyLocationDTO>> getLocations() {
         return ResponseEntity.status(HttpStatus.OK)
-                .body(rickyMortyLocationService.getAll());
+                .body(rickAndMortyLocationService.getAll());
     }
 
     @PostMapping("/save-from-web/{locationId}")
@@ -28,7 +28,7 @@ public class RickyMortyLocationController {
         Map<String, String> result = new HashMap<>();
         result.put("message", "Error on save location");
 
-        boolean saveWithSuccess = rickyMortyLocationService.saveLocationFromWeb(locationId);
+        boolean saveWithSuccess = rickAndMortyLocationService.saveLocationFromWeb(locationId);
         if (saveWithSuccess) {
             result.put("message", "Location created with success");
         }

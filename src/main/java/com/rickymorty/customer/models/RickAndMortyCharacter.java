@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "characters")
-public class RickyMortyCharacter {
+public class RickAndMortyCharacter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,16 +26,16 @@ public class RickyMortyCharacter {
             joinColumns = @JoinColumn(name = "character_id"),
             inverseJoinColumns = @JoinColumn(name = "episode_id")
     )
-    private List<RickyMortyEpisode> episodes;
+    private List<RickAndMortyEpisode> episodes;
 
     @ManyToOne
-    private RickyMortyLocation location;
+    private RickAndMortyLocation location;
 
-    public RickyMortyCharacter() {
+    public RickAndMortyCharacter() {
 
     }
 
-    public RickyMortyCharacter(RickyMortyCharacterRecord character) {
+    public RickAndMortyCharacter(RickAndMortyCharacterRecord character) {
         this.name = character.name();
         this.status = character.status();
         this.species = character.species();
@@ -74,19 +74,19 @@ public class RickyMortyCharacter {
         this.species = species;
     }
 
-    public List<RickyMortyEpisode> getEpisodes() {
+    public List<RickAndMortyEpisode> getEpisodes() {
         return episodes;
     }
 
-    public void setEpisodes(List<RickyMortyEpisode> episodes) {
+    public void setEpisodes(List<RickAndMortyEpisode> episodes) {
         this.episodes = episodes;
     }
 
-    public RickyMortyLocation getLocation() {
+    public RickAndMortyLocation getLocation() {
         return location;
     }
 
-    public void setLocation(RickyMortyLocation location) {
+    public void setLocation(RickAndMortyLocation location) {
         this.location = location;
     }
 

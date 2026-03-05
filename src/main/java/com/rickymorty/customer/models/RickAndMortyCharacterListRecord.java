@@ -6,5 +6,5 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record RickyMortyLocationListRecord(@JsonAlias("results") List<RickyMortyLocationRecord> locations) {
+public record RickAndMortyCharacterListRecord(@JsonAlias("results") List<RickAndMortyCharacterRecord> characters) {
 }
