@@ -15,8 +15,6 @@ public interface ICharacterRepository extends JpaRepository<RickAndMortyCharacte
 
     Long countByLocationId(Long id);
 
-    List<RickAndMortyCharacter> findByLocationId(Long locationId);
-
     Page<RickAndMortyCharacter> findByLocationId(Long locationId, Pageable pageable);
 
     Page<RickAndMortyCharacter> findByLocationIdAndNameContainingIgnoreCase(Long locationId, String name, Pageable pageable);
