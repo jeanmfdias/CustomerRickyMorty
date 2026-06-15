@@ -49,6 +49,24 @@ class RickAndMortyCharacterControllerTest {
     }
 
     @Test
+    void saveEpisodesByCharacter_whenSuccess_returns201() throws Exception {
+        when(service.saveEpisodesByCharacter(1L)).thenReturn(true);
+
+        mockMvc.perform(post("/characters/save-episodes/1"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.message").value("Save episodes to character (1) with success"));
+    }
+
+    @Test
+    void saveEpisodesByCharacter_whenFailure_returns400() throws Exception {
+        when(service.saveEpisodesByCharacter(1L)).thenReturn(false);
+
+        mockMvc.perform(post("/characters/save-episodes/1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Error on save episodes by character"));
+    }
+
+    @Test
     void getByLocationName_returnsList() throws Exception {
         RickAndMortyCharacterDto dto = new RickAndMortyCharacterDto(1L, "Rick", "Alive", "Human");
         when(service.getAllByLocationName("earth")).thenReturn(List.of());

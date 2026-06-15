@@ -2,6 +2,7 @@ package com.rickymorty.customer.services;
 
 import com.rickymorty.customer.models.*;
 import com.rickymorty.customer.repositories.ICharacterRepository;
+import com.rickymorty.customer.repositories.IEpisodeRepository;
 import com.rickymorty.customer.repositories.ILocationRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,7 @@ class RickAndMortyCharacterServiceTest {
 
     @Mock private ILocationRepository locationRepository;
     @Mock private ICharacterRepository characterRepository;
+    @Mock private IEpisodeRepository episodeRepository;
     @Mock private ConsumerApi consumerApi;
     @Mock private TranslateData translateData;
 
@@ -54,6 +56,35 @@ class RickAndMortyCharacterServiceTest {
 
         assertThat(service.saveCharacterByLocation(1L)).isTrue();
         verify(locationRepository).save(location);
+    }
+
+    @Test
+    void saveEpisodesByCharacter_whenCharacterNotFound_returnsFalse() {
+        when(characterRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThat(service.saveEpisodesByCharacter(1L)).isFalse();
+        verify(characterRepository, never()).save(any());
+        verify(episodeRepository, never()).save(any());
+    }
+
+    @Test
+    void saveEpisodesByCharacter_whenCharacterFound_savesEpisodesAndReturnsTrue() {
+        RickAndMortyCharacter character = new RickAndMortyCharacter();
+        character.setName("Rick");
+
+        RickAndMortyCharacterListRecord listRecord = new RickAndMortyCharacterListRecord(
+                List.of(new RickAndMortyCharacterRecord("Rick", "Alive", "Human", List.of("ep-url")))
+        );
+        RickAndMortyEpisodeRecord episodeRecord = new RickAndMortyEpisodeRecord("Pilot", "December 2, 2013", "S01E01");
+
+        when(characterRepository.findById(1L)).thenReturn(Optional.of(character));
+        when(consumerApi.getData(anyString())).thenReturn("{}");
+        when(translateData.getData(eq("{}"), eq(RickAndMortyCharacterListRecord.class))).thenReturn(listRecord);
+        when(translateData.getData(eq("{}"), eq(RickAndMortyEpisodeRecord.class))).thenReturn(episodeRecord);
+
+        assertThat(service.saveEpisodesByCharacter(1L)).isTrue();
+        verify(episodeRepository).save(any(RickAndMortyEpisode.class));
+        verify(characterRepository).save(character);
     }
 
     @Test

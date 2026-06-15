@@ -2,6 +2,7 @@ package com.rickymorty.customer.services;
 
 import com.rickymorty.customer.models.*;
 import com.rickymorty.customer.repositories.ICharacterRepository;
+import com.rickymorty.customer.repositories.IEpisodeRepository;
 import com.rickymorty.customer.repositories.ILocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,12 +23,17 @@ public class RickAndMortyCharacterService {
     private ICharacterRepository characterRepository;
 
     @Autowired
+    private IEpisodeRepository episodeRepository;
+
+    @Autowired
     private ConsumerApi consumerApi;
 
     @Autowired
     private TranslateData translateData;
 
     private final String ADDRESS_LOCATION = "https://rickandmortyapi.com/api/location/";
+
+    private final String ADDRESS_CHARACTER = "https://rickandmortyapi.com/api/character/";
 
     public boolean saveCharacterByLocation(Long locationId) {
         Optional<RickAndMortyLocation> location = this.locationRepository.findById(locationId);;
@@ -56,6 +62,33 @@ public class RickAndMortyCharacterService {
             }
             locationFinded.setResidents(characters);
             this.locationRepository.save(locationFinded);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean saveEpisodesByCharacter(Long characterId) {
+        Optional<RickAndMortyCharacter> character = this.characterRepository.findById(characterId);
+
+        if (character.isPresent()) {
+            RickAndMortyCharacter characterFinded = character.get();
+
+            String url = ADDRESS_CHARACTER + "?name=" + characterFinded.getName().toLowerCase().replace(" ", "+");
+            String json = this.consumerApi.getData(url);
+            RickAndMortyCharacterListRecord list = this.translateData.getData(json, RickAndMortyCharacterListRecord.class);
+
+            List<RickAndMortyEpisode> episodes = new ArrayList<>();
+            for (RickAndMortyCharacterRecord record : list.characters()) {
+                for (String urlEpisode : record.episodes()) {
+                    json = this.consumerApi.getData(urlEpisode);
+                    RickAndMortyEpisodeRecord episodeRecord = this.translateData.getData(json, RickAndMortyEpisodeRecord.class);
+                    RickAndMortyEpisode episode = new RickAndMortyEpisode(episodeRecord);
+                    this.episodeRepository.save(episode);
+                    episodes.add(episode);
+                }
+            }
+            characterFinded.setEpisodes(episodes);
+            this.characterRepository.save(characterFinded);
             return true;
         }
         return false;

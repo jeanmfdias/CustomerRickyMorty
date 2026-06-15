@@ -37,55 +37,15 @@ public class Main {
         int option = -1;
         while (option != 0) {
             System.out.println("Choose a option: ");
-            System.out.println("4 - Search All Episodes by Character");
-            System.out.println("7 - Search Character by Location name");
             System.out.println("0 - Exit");
             option = scanner.nextInt();
 
             switch (option) {
-                case 4:
-                    this.searchEpisodesByCharacter();
-                    break;
                 case 0:
                     break;
                 default:
                     System.out.println("Invalid option");
             }
-        }
-    }
-
-    private void searchEpisodesByCharacter() {
-        List<RickAndMortyLocation> locations = this.locationRepository.findAll();
-        locations.forEach(System.out::println);
-
-        System.out.print("Choice a character ID: ");
-        scanner.reset();
-        Long characterId = scanner.nextLong();
-
-        Optional<RickAndMortyCharacter> character = locations.stream()
-                .flatMap(l -> l.getResidents().stream())
-                .filter(c -> c.getId().equals(characterId))
-                .findFirst();
-
-        if (character.isPresent()) {
-            RickAndMortyCharacter characterFinded = character.get();
-            String url = ADDRESS_CHARACTER + "?name=" + characterFinded.getName().toLowerCase().replace(" ", "+");
-            String json = this.consumerApi.getData(url);
-            RickAndMortyCharacterListRecord list = this.translateData.getData(json, RickAndMortyCharacterListRecord.class);
-            List<RickAndMortyEpisode> episodes = new ArrayList<>();
-            for (RickAndMortyCharacterRecord record : list.characters()) {
-                for (String urlEpisode : record.episodes()) {
-                    json = this.consumerApi.getData(urlEpisode);
-                    RickAndMortyEpisodeRecord episodeRecord = this.translateData.getData(json, RickAndMortyEpisodeRecord.class);
-                    RickAndMortyEpisode episode = new RickAndMortyEpisode(episodeRecord);
-                    this.episodeRepository.save(episode);
-                    episodes.add(episode);
-                }
-            }
-            characterFinded.setEpisodes(episodes);
-            this.characterRepository.save(characterFinded);
-        } else {
-            System.out.println("Character not found");
         }
     }
 

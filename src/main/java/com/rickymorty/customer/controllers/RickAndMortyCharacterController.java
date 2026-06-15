@@ -40,6 +40,22 @@ public class RickAndMortyCharacterController {
                 .body(response);
     }
 
+    @PostMapping("/save-episodes/{characterId}")
+    public ResponseEntity<Map<String, String>> saveEpisodesByCharacter(@PathVariable int characterId) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Error on save episodes by character");
+        int status = 400;
+
+        boolean responseStatus = this.rickAndMortyCharacterService.saveEpisodesByCharacter((long) characterId);
+        if (responseStatus) {
+            status = 201;
+            response.put("message", "Save episodes to character (%d) with success".formatted(characterId));
+        }
+
+        return ResponseEntity.status(HttpStatus.resolve(status))
+                .body(response);
+    }
+
     @GetMapping("location-name")
     public ResponseEntity<List<RickAndMortyCharacterDto>> getByLocationName(@RequestParam String name) {
         var listRickAndMortyCharacter = this.rickAndMortyCharacterService.getAllByLocationName(name);
