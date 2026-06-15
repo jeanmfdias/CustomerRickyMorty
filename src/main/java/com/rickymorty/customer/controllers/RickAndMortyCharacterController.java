@@ -1,6 +1,7 @@
 package com.rickymorty.customer.controllers;
 
 import com.rickymorty.customer.dto.RickAndMortyCharacterDto;
+import com.rickymorty.customer.dto.RickAndMortyTopCharacterDto;
 import com.rickymorty.customer.services.RickAndMortyCharacterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,6 +57,14 @@ public class RickAndMortyCharacterController {
         var response = this.rickAndMortyCharacterService
                 .getAllByLocationId(locationId, name, PageRequest.of(page, size))
                 .map(RickAndMortyCharacterDto::new);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/top-five-episodes")
+    public ResponseEntity<List<RickAndMortyTopCharacterDto>> getTopFiveByEpisodes() {
+        var response = this.rickAndMortyCharacterService.getTopFiveByEpisodes()
+                .stream().map(RickAndMortyTopCharacterDto::new).toList();
 
         return ResponseEntity.ok(response);
     }

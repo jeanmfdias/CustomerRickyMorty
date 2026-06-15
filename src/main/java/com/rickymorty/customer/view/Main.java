@@ -120,14 +120,4 @@ public class Main {
     private void showProgress() {
         System.out.print(".");
     }
-
-    private void topFiveCharacter(List<RickAndMortyCharacterRecord> residents) {
-        System.out.println("Top 5 character with more episodes...");
-
-        residents.stream()
-                .map(c -> Map.of(c.name(), c.episodes().size()))
-                .sorted(Comparator.comparing(c -> c.values().iterator().next(), Comparator.reverseOrder()))
-                .limit(5)
-                .forEach(System.out::println);
-    }
 }

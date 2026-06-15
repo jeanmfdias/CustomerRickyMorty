@@ -5,6 +5,7 @@ import com.rickymorty.customer.repositories.ICharacterRepository;
 import com.rickymorty.customer.repositories.ILocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -77,5 +78,9 @@ public class RickAndMortyCharacterService {
             return this.characterRepository.findByLocationIdAndNameContainingIgnoreCase(locationId, name, pageable);
         }
         return this.characterRepository.findByLocationId(locationId, pageable);
+    }
+
+    public List<RickAndMortyCharacter> getTopFiveByEpisodes() {
+        return this.characterRepository.findTopByEpisodesCount(PageRequest.of(0, 5));
     }
 }
