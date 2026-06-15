@@ -1,5 +1,6 @@
 package com.rickymorty.customer.controllers;
 
+import com.rickymorty.customer.dto.RickAndMortyEpisodesAndCharactersDto;
 import com.rickymorty.customer.dto.RickAndMortyLocationDTO;
 import com.rickymorty.customer.services.RickAndMortyLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,12 @@ public class RickAndMortyLocationController {
     public ResponseEntity<List<RickAndMortyLocationDTO>> getLocations() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(rickAndMortyLocationService.getAll());
+    }
+
+    @GetMapping("/episodes-and-characters/{locationId}")
+    public ResponseEntity<RickAndMortyEpisodesAndCharactersDto> getEpisodesAndCharacters(@PathVariable int locationId) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(rickAndMortyLocationService.getEpisodesAndCharacters(locationId));
     }
 
     @PostMapping("/save-from-web/{locationId}")

@@ -1,7 +1,10 @@
 package com.rickymorty.customer.services;
 
+import com.rickymorty.customer.dto.RickAndMortyEpisodesAndCharactersDto;
 import com.rickymorty.customer.dto.RickAndMortyLocationDTO;
 import com.rickymorty.customer.models.RickAndMortyCharacter;
+import com.rickymorty.customer.models.RickAndMortyCharacterRecord;
+import com.rickymorty.customer.models.RickAndMortyEpisodeRecord;
 import com.rickymorty.customer.models.RickAndMortyLocation;
 import com.rickymorty.customer.models.RickAndMortyLocationRecord;
 import com.rickymorty.customer.repositories.ILocationRepository;
@@ -38,6 +41,25 @@ class RickAndMortyLocationServiceTest {
         assertThat(location.getName()).isEqualTo("Earth");
         assertThat(location.getType()).isEqualTo("Planet");
         assertThat(location.getDimension()).isEqualTo("C-137");
+    }
+
+    @Test
+    void getEpisodesAndCharacters_returnsResidentsAndTheirEpisodes() {
+        RickAndMortyLocationRecord locationRecord = new RickAndMortyLocationRecord("Earth", "Planet", "C-137", List.of("char-url"));
+        RickAndMortyCharacterRecord characterRecord = new RickAndMortyCharacterRecord("Rick", "Alive", "Human", List.of("ep-url"));
+        RickAndMortyEpisodeRecord episodeRecord = new RickAndMortyEpisodeRecord("Pilot", "December 2, 2013", "S01E01");
+
+        when(consumerApi.getData("https://rickandmortyapi.com/api/location/1")).thenReturn("location-json");
+        when(consumerApi.getData("char-url")).thenReturn("character-json");
+        when(consumerApi.getData("ep-url")).thenReturn("episode-json");
+        when(translateData.getData("location-json", RickAndMortyLocationRecord.class)).thenReturn(locationRecord);
+        when(translateData.getData("character-json", RickAndMortyCharacterRecord.class)).thenReturn(characterRecord);
+        when(translateData.getData("episode-json", RickAndMortyEpisodeRecord.class)).thenReturn(episodeRecord);
+
+        RickAndMortyEpisodesAndCharactersDto result = service.getEpisodesAndCharacters(1);
+
+        assertThat(result.residents()).containsExactly(characterRecord);
+        assertThat(result.episodes()).containsExactly(episodeRecord);
     }
 
     @Test

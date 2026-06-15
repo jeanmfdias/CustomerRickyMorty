@@ -8,7 +8,6 @@ import com.rickymorty.customer.services.ConsumerApi;
 import com.rickymorty.customer.services.TranslateData;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Main {
     private final Scanner scanner = new Scanner(System.in);
@@ -90,34 +89,4 @@ public class Main {
         }
     }
 
-    private void showEpisodesAndCharacters(RickAndMortyLocationRecord rickAndMortyLocationRecord) {
-        List<RickAndMortyCharacterRecord> residents = new ArrayList<>();
-        List<RickAndMortyEpisodeRecord> episodes = new ArrayList<>();
-
-        rickAndMortyLocationRecord.residents().forEach(c -> {
-            var temp = consumerApi.getData(c);
-            RickAndMortyCharacterRecord character = translateData.getData(temp, RickAndMortyCharacterRecord.class);
-            character.episodes().forEach(e -> {
-                var tempEpisode = consumerApi.getData(e);
-                RickAndMortyEpisodeRecord episode = translateData.getData(tempEpisode, RickAndMortyEpisodeRecord.class);
-                episodes.add(episode);
-                showProgress();
-            });
-            residents.add(character);
-            showProgress();
-        });
-
-        residents.forEach(System.out::println);
-        episodes.forEach(System.out::println);
-
-        List<String> urlEpisodes = residents.stream()
-                .flatMap(c -> c.episodes().stream())
-                .collect(Collectors.toList());
-
-        System.out.println(urlEpisodes);
-    }
-
-    private void showProgress() {
-        System.out.print(".");
-    }
 }

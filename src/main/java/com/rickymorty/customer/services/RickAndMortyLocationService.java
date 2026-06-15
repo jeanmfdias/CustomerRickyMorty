@@ -1,12 +1,16 @@
 package com.rickymorty.customer.services;
 
+import com.rickymorty.customer.dto.RickAndMortyEpisodesAndCharactersDto;
 import com.rickymorty.customer.dto.RickAndMortyLocationDTO;
+import com.rickymorty.customer.models.RickAndMortyCharacterRecord;
+import com.rickymorty.customer.models.RickAndMortyEpisodeRecord;
 import com.rickymorty.customer.models.RickAndMortyLocation;
 import com.rickymorty.customer.models.RickAndMortyLocationRecord;
 import com.rickymorty.customer.repositories.ILocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +52,29 @@ public class RickAndMortyLocationService {
                         })
                         .collect(Collectors.toList())))
                 .collect(Collectors.toList());
+    }
+
+    public RickAndMortyEpisodesAndCharactersDto getEpisodesAndCharacters(int locationId) {
+        String fullAddress = ADDRESS_LOCATION + locationId;
+        String json = this.consumerApi.getData(fullAddress);
+        RickAndMortyLocationRecord locationRecord = this.translateData.getData(json, RickAndMortyLocationRecord.class);
+
+        List<RickAndMortyCharacterRecord> residents = new ArrayList<>();
+        List<RickAndMortyEpisodeRecord> episodes = new ArrayList<>();
+
+        locationRecord.residents().forEach(characterUrl -> {
+            String characterJson = this.consumerApi.getData(characterUrl);
+            RickAndMortyCharacterRecord character = this.translateData.getData(characterJson, RickAndMortyCharacterRecord.class);
+
+            character.episodes().forEach(episodeUrl -> {
+                String episodeJson = this.consumerApi.getData(episodeUrl);
+                RickAndMortyEpisodeRecord episode = this.translateData.getData(episodeJson, RickAndMortyEpisodeRecord.class);
+                episodes.add(episode);
+            });
+            residents.add(character);
+        });
+
+        return new RickAndMortyEpisodesAndCharactersDto(residents, episodes);
     }
 
     public boolean saveLocationFromWeb(int id) {

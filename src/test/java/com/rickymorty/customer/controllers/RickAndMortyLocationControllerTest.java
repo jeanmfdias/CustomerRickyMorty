@@ -1,6 +1,9 @@
 package com.rickymorty.customer.controllers;
 
+import com.rickymorty.customer.dto.RickAndMortyEpisodesAndCharactersDto;
 import com.rickymorty.customer.dto.RickAndMortyLocationDTO;
+import com.rickymorty.customer.models.RickAndMortyCharacterRecord;
+import com.rickymorty.customer.models.RickAndMortyEpisodeRecord;
 import com.rickymorty.customer.services.RickAndMortyLocationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +50,19 @@ class RickAndMortyLocationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    void getEpisodesAndCharacters_returnsOkWithResidentsAndEpisodes() throws Exception {
+        var dto = new RickAndMortyEpisodesAndCharactersDto(
+                List.of(new RickAndMortyCharacterRecord("Rick", "Alive", "Human", List.of("ep-url"))),
+                List.of(new RickAndMortyEpisodeRecord("Pilot", "December 2, 2013", "S01E01")));
+        when(service.getEpisodesAndCharacters(1)).thenReturn(dto);
+
+        mockMvc.perform(get("/locations/episodes-and-characters/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.residents[0].name").value("Rick"))
+                .andExpect(jsonPath("$.episodes[0].name").value("Pilot"));
     }
 
     @Test
