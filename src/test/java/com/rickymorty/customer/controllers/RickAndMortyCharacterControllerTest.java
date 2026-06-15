@@ -98,6 +98,20 @@ class RickAndMortyCharacterControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void getTopFiveByEpisodes_returnsListWithNameAndEpisodeCount() throws Exception {
+        com.rickymorty.customer.models.RickAndMortyCharacter rick = buildCharacter(1L, "Rick", "Alive", "Human");
+        rick.setEpisodes(List.of(new com.rickymorty.customer.models.RickAndMortyEpisode(),
+                new com.rickymorty.customer.models.RickAndMortyEpisode()));
+        when(service.getTopFiveByEpisodes()).thenReturn(List.of(rick));
+
+        mockMvc.perform(get("/characters/top-five-episodes"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[0].name").value("Rick"))
+                .andExpect(jsonPath("$[0].episodes").value(2));
+    }
+
     private com.rickymorty.customer.models.RickAndMortyCharacter buildCharacter(Long id, String name, String status, String species) {
         com.rickymorty.customer.models.RickAndMortyCharacter c = new com.rickymorty.customer.models.RickAndMortyCharacter();
         c.setId(id);

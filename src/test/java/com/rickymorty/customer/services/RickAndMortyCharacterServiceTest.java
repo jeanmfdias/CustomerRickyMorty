@@ -121,4 +121,13 @@ class RickAndMortyCharacterServiceTest {
         verify(characterRepository).findByLocationId(1L, pageable);
         verify(characterRepository, never()).findByLocationIdAndNameContainingIgnoreCase(anyLong(), any(), any());
     }
+
+    @Test
+    void getTopFiveByEpisodes_requestsTopFiveAndReturnsDelegatedList() {
+        RickAndMortyCharacter character = new RickAndMortyCharacter();
+        when(characterRepository.findTopByEpisodesCount(PageRequest.of(0, 5))).thenReturn(List.of(character));
+
+        assertThat(service.getTopFiveByEpisodes()).containsExactly(character);
+        verify(characterRepository).findTopByEpisodesCount(PageRequest.of(0, 5));
+    }
 }
